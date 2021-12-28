@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Calculadora Accesible</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="css/css.css" rel="stylesheet" type="text/css"/>
+        <script src="js/js.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div class="calculadora">
+            <form name="calculadora" id="calculadora">
+                <p id="lblPreview"></p>
+                <p id="lblPantalla">0</p>
+                <p>
+                    <input type="button" class="largo" value="C" onclick="borrarTodo()"  />
+                    <input type="button" class="largo" value="CE" onclick="borrarActual()"  />
+                    <input type="button" class="largo" value="←" onclick="retro()"   />
+                </p>
+                <p>
+                    <input type="button" value="7" onclick="setNumero(7)" />
+                    <input type="button" value="8" onclick="setNumero('8')" />
+                    <input type="button" value="9" onclick="setNumero('9')" />
+                    <input type="button" value="/" onclick="operacion('/')"  />
+                </p>
+                <p>
+                    <input type="button" value="4" onclick="setNumero('4')" />
+                    <input type="button" value="5" onclick="setNumero('5')" />
+                    <input type="button" value="6" onclick="setNumero('6')" />
+                    <input type="button" value="*" onclick="operacion('*')" />
+                </p>
+                <p>
+                    <input type="button" value="1" onclick="setNumero('1')" />
+                    <input type="button" value="2" onclick="setNumero('2')" />
+                    <input type="button" value="3" onclick="setNumero('3')" />
+                    <input type="button" value="-" onclick="operacion('-')" />
+                </p>
+                <p>
+                    <input type="button" value="0" onclick="setNumero('0')" />
+                    <input type="button" value="." onclick="setNumero('.')" />
+                    <input type="button" value="=" onclick="getResultado()" />
+                    <input type="button" value="+" onclick="operacion('+')" />
+                </p>
+            </form>
+        </div>
+    </body>
+</html>

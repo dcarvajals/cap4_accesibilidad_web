@@ -1,0 +1,198 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head >
+        <meta charset="UTF-8"></meta>
+        <link href="resources/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <title>Intercambio de datos</title>
+        <h:outputStylesheet library="css" name="bootstrap.css"/>
+        <h:outputStylesheet library="css" name="micss.css"/>
+        <h:outputScript name="js/miJS.js"/>
+        <style type="text/css">
+            .value {
+                font-weight: bold;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form id="frmLibros">
+            <div  style="background: white;margin-bottom:80px;" class="col-lg-12 col-md-12 col-xs-12">
+                <h:graphicImage  style="width:100%;height:100%;" library="imgDisenio" name="qwer.png"></h:graphicImage>
+                <div class="row">
+                    <div class="col-lg-12 col-md-4 col-xs-2">
+                        <p:commandLink  onclick="PF('dlgMantenimientoLibro').show();" style="position: absolute; left:3px; color: #262626; margin: 30px;" class=" btn btn-default" ajax="true" title="Nuevo Libro" >
+                            <img width="25px" height="25px" style="margin-right: 10px" src="https://img.icons8.com/fluent/48/000000/book.png"/>Añadir libro
+                            <f:setPropertyActionListener value="false" target="#{miManageBean.editar}" />
+                        </p:commandLink>
+                        <p:commandLink  onclick="PF('dlgMantenimientoLibro').show();" style="position: absolute; left:150px; color: #262626; margin: 30px;" class=" btn btn-default" ajax="true" title="Ver JSOON - XML Generado" >
+                            <img width="25px" height="25px" style="margin-right: 10px" src="https://img.icons8.com/color/48/000000/exit.png"/>Ver JSON y XML
+                        </p:commandLink>  
+                        <p:commandLink  onclick="" style="position: absolute; left:330px; color: #262626; margin: 30px;" class=" btn btn-default" ajax="true" title="Nuevo Libro" >
+                            <img width="25px" height="25px" style="margin-right: 10px" src="https://img.icons8.com/color/48/000000/exit.png"/>Salir
+                            <f:setPropertyActionListener value="false" target="#{miManageBean.editar}" />
+                        </p:commandLink>                         
+                    </div>                                                             
+                </div>                                                  
+            </div>
+            <div class="col-lg-12 col-md-12  col-xs-12 ">
+
+                <p:panelGrid columns="2">
+                    <h:outputLabel for="name" value="Busqueda" />
+                    <h:inputText id="name" required="true" autocomplete="off" value="#{miManageBean.filtro}">
+                        <f:ajax render="tblLibros" event="keyup" listener="#{miManageBean.buscar()}"/>
+                    </h:inputText>
+                </p:panelGrid>
+
+                <p:dataGrid emptyMessage="No existen libros" style="background: #31b0d5;height: 80px"  var="libros" value="#{miManageBean.listaLibros}" columns="3" rows="12" paginator="true" id="tblLibros"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="6,12,16">
+
+                    <f:facet  name="header">
+                        <h:outputText value="Libros"/>
+                    </f:facet>
+                    <p:panel header="#{libros.titulo}" style="text-align:center; background: #ebebeb !important;">
+                        <h:panelGrid columns="1" style="width:100%">
+                            <p:graphicImage class="img-rounded" library="imagesLibros" name="#{libros.imagen}" height="150" width="150" /> 
+                            <h:outputText value="#{libros.anio}" />
+
+                            <h:panelGrid columns="3" style="margin: 0px auto;" >
+                                <p:commandLink class=" btn btn-default" update=":frmLibros:panelDetalleLibro" oncomplete="PF('dialogLibro').show()" title="Ver Detalles">
+                                    <h:graphicImage width="25px" height="25px" library="images" name="viewBook.png"/>
+                                    <f:setPropertyActionListener value="#{libros}" target="#{miManageBean.selectLibro}" />
+                                </p:commandLink>
+
+                                <p:commandLink class=" btn btn-default" update=":frmRegistro" title="Editar"
+                                               oncomplete="PF('dlgMantenimientoLibro').show(); crearJSON(); document.getElementById('frmRegistro:btnGuardar').value ='Editar Libro';">
+                                    <h:graphicImage width="25px" height="25px" library="images" name="editBook.png"/>
+                                    <f:setPropertyActionListener value="#{libros}" target="#{miManageBean.libro}" />
+                                    <f:setPropertyActionListener value="true" target="#{miManageBean.editar}" />
+                                </p:commandLink>
+
+                                <p:commandLink class=" btn btn-default" title="Eliminar" action="#{miManageBean.eliminar(libros)}" onclick="PF('dlgConfirmar').show()">
+                                    <f:setPropertyActionListener value="#{libros}" target="#{miManageBean.libro}" />
+                                    <h:graphicImage width="25px" height="25px" library="images" name="deleteBook.png"/>
+                                    <p:confirm header="Confirmation" message="Are you sure deleted Article #{libro.titulo}?"/>
+                                </p:commandLink>
+
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes"/>
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no"/>
+                                </p:confirmDialog>                                
+
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:dataGrid>
+            </div>
+
+            <p:dialog header="Info Libro" widgetVar="dialogLibro" modal="true" showEffect="explode" hideEffect="explode" resizable="false">
+                <p:outputPanel id="panelDetalleLibro" style="text-align:center;">
+                    <p:panelGrid  columns="2" rendered="#{not empty miManageBean.selectLibro}" columnClasses="value, value">
+                        <f:facet name="header">
+                            <p:graphicImage  height="200" width="100%" library="imagesLibros" name="#{miManageBean.selectLibro.imagen}"/> 
+                        </f:facet>
+                        <h:outputLabel value="Id:" />
+                        <h:outputText value="#{miManageBean.selectLibro.idLibro}" />
+
+                        <h:outputText value="Tipo:" />
+                        <h:outputText value="#{miManageBean.selectLibro.tipo}" />
+
+                        <h:outputText value="Titulo:" />
+                        <h:outputText value="#{miManageBean.selectLibro.titulo}" />
+
+                        <h:outputText value="Autor:" />
+                        <h:outputText value="#{miManageBean.selectLibro.autor}"/>
+
+                        <h:outputText value="Año:" />
+                        <h:outputText value="#{miManageBean.selectLibro.anio}" />
+
+                        <h:outputText value="Abstract:" />
+                        <h:outputText value="#{miManageBean.selectLibro.abstractLibro}" />
+
+                        <h:outputText value="KeyWords:" />
+                        <h:outputText value="#{miManageBean.selectLibro.keywords}" />
+
+                        <h:outputText value="DOI:" />
+                        <h:outputText value="#{miManageBean.selectLibro.doi}" />
+
+                        <h:outputText value="ISBN/ISSN:" />
+                        <h:outputText value="#{miManageBean.selectLibro.isbn}" />
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <h:form id="frmRegistro" enctype="multipart/form-data">
+            <p:dialog id="dlgMantenimientoLibro" resizable="false" widgetVar="dlgMantenimientoLibro" header="#{miManageBean.editar?'Editar Libro':'Agregar Libro'}" visible="false" closeOnEscape="true" showEffect="explode" hideEffect="explode" >
+                <p:tabView prependId="false">
+                    <p:tab title="Datos">
+                        <h:panelGrid columns="2" id="panelGrid">
+                            <h:outputLabel value="ID:" for="txtIdLibro"/>
+                            <h:inputText id="txtIdLibro" readonly="true" style="margin: 5px" class="form-control" value="#{miManageBean.libro.idLibro}"/>
+                            <h:outputLabel value="Tipo:" for="cmbTipo"/>
+                            <h:selectOneMenu id="cmbTipo" value="#{miManageBean.libro.tipo}" style="margin: 5px" class="form-control" onchange="crearJSON();">
+                                <f:selectItem itemLabel="Libro" itemValue="Libro"/>
+                                <f:selectItem itemLabel="Artículo" itemValue="Artículo"/>
+                                <f:selectItem itemLabel="No Específico" itemValue="No Especifico"/>
+                            </h:selectOneMenu>
+                            <h:outputLabel value="Título:" for="txtTitulo"/>
+                            <h:inputText id="txtTitulo" value="#{miManageBean.libro.titulo}" required="true" requiredMessage="Ingrese título" style="margin: 5px" class="form-control" onblur="validarTitulo();" onkeyup="crearJSON();">
+                            </h:inputText>
+                            <h:outputLabel value="Autor:" for="txtAutor"/>
+                            <h:inputText id="txtAutor" value="#{miManageBean.libro.autor}" required="true" requiredMessage="Ingrese Autor" style="margin: 5px" class="form-control" onblur="validarAutor();" onkeyup="crearJSON();">
+                            </h:inputText>
+                            <h:outputLabel value="Año:" for="cmbAnio"/>
+                            <h:selectOneMenu id="cmbAnio" value="#{miManageBean.libro.anio}" required="true" requiredMessage="Ingrese Año" style="margin: 5px" class="form-control" onchange="crearJSON();">
+                                <f:selectItems value="#{miManageBean.listaAnios}"/>
+                            </h:selectOneMenu>
+                            <h:outputLabel value="Abstract:" for="txtAbstract"/>
+                            <h:inputTextarea id="txtAbstract" value="#{miManageBean.libro.abstractLibro}" style="margin: 5px" class="form-control" onkeyup="crearJSON();">
+                            </h:inputTextarea>
+                            <h:outputLabel value="Keywords:" for="txtKeywords"/>
+                            <h:inputText id="txtKeywords" value="#{miManageBean.libro.keywords}" style="margin: 5px" class="form-control" onkeyup="crearJSON()">
+                            </h:inputText>
+                            <h:outputLabel value="DOI:" for="txtDOI"/>
+                            <h:inputText id="txtDOI" value="#{miManageBean.libro.doi}" style="margin: 5px" class="form-control" onkeyup="crearJSON()">
+                            </h:inputText>
+                            <h:outputLabel value="ISBN/ISSN:" for="txtISBN"/>
+                            <h:inputText id="txtISBN" value="#{miManageBean.libro.isbn}" style="margin: 5px" class="form-control" onkeyup="crearJSON()">
+                            </h:inputText>
+                            <h:outputLabel value="Imagen:" />
+                            <p:fileUpload allowTypes="/(\.|\/)(gif|jpe?g|png)$/" mode="simple" 
+                                          dragDropSupport="true" label="O selecciona un archivo" 
+                                          value="#{miManageBean.file}"/>
+                                <!--<h:outputText id="txtImagen" value="#{miManageBean.libro.imagen}"/>-->
+                            <h:commandButton id="btnGuardar" value="Guardar" action="#{miManageBean.registrar()}" style="margin: 5px; background-color: #31b0d5"  class="btn btn-danger">
+                                <!--<f:setPropertyActionListener value="PF('txtJSON').value" target="#{miManageBean.json}" />-->
+                            </h:commandButton>
+
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab title="JSON">
+                        <p:inputTextarea widgetVar="txtJSON" id="txtJson" autoResize="true" rows="18" cols="50" value="#{miManageBean.json}" style="height:200px;"/>                       
+                    </p:tab>
+                </p:tabView>
+
+            </p:dialog>
+        </h:form>
+
+        <h:form id="frmTxt" enctype="multipart/form-data">
+            <h:commandButton type="button" onclick="PF('dlgJSONXML').show()" value="Ver JSON/XML generado"/>
+            <p:dialog widgetVar="dlgJSONXML" closeOnEscape="true" resizable="false" header="JSON/XML Generado"
+                      showEffect="explode" hideEffect="explode">
+
+                <p:growl id="growl" widgetVar="growl" showDetail="true" life="10000"/>  
+                <h:panelGrid id="panel1" >
+                    <p:inputTextarea id="txtInput" readonly="true" autoResize="true" rows="13" cols="100" value="#{miManageBean.json}"/>
+                    <p:inputTextarea autoResize="true" readonly="true" id="txtOutput" rows="14" cols="100" value="#{miManageBean.xml}"/>
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+    </h:body>
+</html>
+
